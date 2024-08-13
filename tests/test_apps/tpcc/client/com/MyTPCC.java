@@ -149,10 +149,10 @@ public class MyTPCC
                     thisOutstanding = numSPCalls - totExecutions;
 
                     double avgLatency = (double) totExecutionMilliseconds / (double) totExecutionsLatency;
-                    double tps = (numSPCalls - lastNumSPCalls) / time_interval; // real-time throughput.
+                    double tps = (numSPCalls - lastNumSPCalls) * 1000.0 / time_interval; // real-time throughput.
                     lastNumSPCalls = numSPCalls;
 
-                    System.out.printf("%.3f%% Complete | Allowing %,d SP calls/sec: made %,d SP calls at %,.2f SP/sec | outstanding = %d (%d) | min = %d | max = %d | avg = %.2f\n",
+                    System.out.printf("%.3f%% Complete | Allowing %d SP calls/sec: made %d SP calls at %.2f SP/sec | outstanding = %d (%d) | min = %d | max = %d | avg = %.2f\n",
                             percentComplete, (transactions_per_milli * 1000l), numSPCalls, tps, thisOutstanding, (thisOutstanding - lastOutstanding), minExecutionMilliseconds, maxExecutionMilliseconds, avgLatency);
                     for (int i = 0; i < procNames.length; i++)
                     {
@@ -238,7 +238,7 @@ public class MyTPCC
         m_helpah.add("skewfactor", "skew_factor", "Skew factor", 0.0);
         m_helpah.add("loadthreads", "number_of_load_threads", "Number of load threads", 4);
         m_helpah.add("ratelimit", "rate_limit", "Rate limit to start from (tps)", 200000);
-        m_helpah.add("displayinterval", "display_interval_in_seconds", "Interval for performance feedback, in milliseconds.", 10);
+        m_helpah.add("displayinterval", "display_interval_in_seconds", "Interval for performance feedback, in milliseconds.", 100);
         m_helpah.add("servers", "comma_separated_server_list", "List of VoltDB servers to connect to.", "localhost");
         m_helpah.setArguments(args);
 
