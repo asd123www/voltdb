@@ -66,7 +66,7 @@ function client() {
     jars-ifneeded
     java -classpath $APPNAME-client.jar:$APPNAME-procs.jar:$APPCLASSPATH com.MyTPCC \
         --servers=$VM_IP \
-        --duration=180 \
+        --duration=100 \
         --warehouses=256 \
         --scalefactor=22
 }
@@ -79,8 +79,8 @@ function help() {
 # If no first arg, run server
 if [ $# -eq 0 ]; then server; exit; fi
 source $2
-for arg in "$@"
-do
+# for arg in "$@"
+# do
     echo "${0}: Performing $1..."
     $1
-done
+# done
