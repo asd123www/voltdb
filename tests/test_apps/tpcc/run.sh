@@ -58,28 +58,29 @@ function server() {
 # load schema and procedures
 function init() {
     jars-ifneeded
-    sqlcmd < ddl.sql
+    sqlcmd --servers=$VM_IP < ddl.sql
 }
 
 # run the client that drives the example
 function client() {
     jars-ifneeded
     java -classpath $APPNAME-client.jar:$APPNAME-procs.jar:$APPCLASSPATH com.MyTPCC \
-        --servers=localhost \
+        --servers=$VM_IP \
         --duration=180 \
         --warehouses=256 \
         --scalefactor=22
 }
 
 function help() {
-    echo "Usage: ./run.sh {clean|jars|server|init|client}"
+    echo "Usage: ./run.sh {clean|jars|server|init|client} {path/to/config.txt}"
 }
 
 # Run the targets pass on the command line
 # If no first arg, run server
 if [ $# -eq 0 ]; then server; exit; fi
+source $2
 for arg in "$@"
 do
-    echo "${0}: Performing $arg..."
-    $arg
+    echo "${0}: Performing $1..."
+    $1
 done

@@ -70,7 +70,7 @@ public class MyTPCC
     {
         long transactions_per_second = m_helpah.longValue("ratelimit");
         long transactions_per_milli = transactions_per_second / 1000l;
-        long client_feedback_interval_secs = m_helpah.longValue("displayinterval");
+        long client_feedback_interval_secs = m_helpah.longValue("displayinterval"); // milliseconds
         long testDurationSecs = m_helpah.longValue("duration");
         long lag_latency_seconds = 0;
         long lag_latency_millis = lag_latency_seconds * 1000l;
@@ -89,6 +89,7 @@ public class MyTPCC
         long currentTime = startTime;
         long lastFeedbackTime = startTime;
         long numSPCalls = 0;
+        long lastNumSPCalls = 0;
         long startRecordingLatency = startTime + lag_latency_millis;
 
         while (endTime > currentTime)
@@ -122,9 +123,10 @@ public class MyTPCC
                 checkLatency = true;
             }
 
-            if (currentTime >= (lastFeedbackTime + (client_feedback_interval_secs * 1000)))
+            if (currentTime >= (lastFeedbackTime + (client_feedback_interval_secs)))
             {
                 final long elapsedTimeMillis2 = System.currentTimeMillis() - startTime;
+                float time_interval = System.currentTimeMillis() - lastFeedbackTime;
                 lastFeedbackTime = currentTime;
 
                 final long runTimeMillis = endTime - startTime;
@@ -147,7 +149,8 @@ public class MyTPCC
                     thisOutstanding = numSPCalls - totExecutions;
 
                     double avgLatency = (double) totExecutionMilliseconds / (double) totExecutionsLatency;
-                    double tps = numSPCalls / elapsedTimeSec2;
+                    double tps = (numSPCalls - lastNumSPCalls) / time_interval; // real-time throughput.
+                    lastNumSPCalls = numSPCalls;
 
                     System.out.printf("%.3f%% Complete | Allowing %,d SP calls/sec: made %,d SP calls at %,.2f SP/sec | outstanding = %d (%d) | min = %d | max = %d | avg = %.2f\n",
                             percentComplete, (transactions_per_milli * 1000l), numSPCalls, tps, thisOutstanding, (thisOutstanding - lastOutstanding), minExecutionMilliseconds, maxExecutionMilliseconds, avgLatency);
@@ -235,7 +238,7 @@ public class MyTPCC
         m_helpah.add("skewfactor", "skew_factor", "Skew factor", 0.0);
         m_helpah.add("loadthreads", "number_of_load_threads", "Number of load threads", 4);
         m_helpah.add("ratelimit", "rate_limit", "Rate limit to start from (tps)", 200000);
-        m_helpah.add("displayinterval", "display_interval_in_seconds", "Interval for performance feedback, in seconds.", 10);
+        m_helpah.add("displayinterval", "display_interval_in_seconds", "Interval for performance feedback, in milliseconds.", 10);
         m_helpah.add("servers", "comma_separated_server_list", "List of VoltDB servers to connect to.", "localhost");
         m_helpah.setArguments(args);
 
