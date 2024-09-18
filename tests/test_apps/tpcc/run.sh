@@ -66,19 +66,19 @@ function client() {
     jars-ifneeded
     java -classpath $APPNAME-client.jar:$APPNAME-procs.jar:$APPCLASSPATH com.MyTPCC \
         --servers=$VM_IP \
-        --duration=100 \
-        --warehouses=256 \
+        --duration=$2 \
+        --warehouses=$3 \
         --scalefactor=22
 }
 
 function help() {
-    echo "Usage: ./run.sh {clean|jars|server|init|client} {path/to/config.txt}"
+    echo "Usage: ./run.sh {clean|jars|server|init|client} {duration} {warehouses} {path/to/config.txt}"
 }
 
 # Run the targets pass on the command line
 # If no first arg, run server
 if [ $# -eq 0 ]; then server; exit; fi
-source $2
+source $4
 # for arg in "$@"
 # do
     echo "${0}: Performing $1..."
