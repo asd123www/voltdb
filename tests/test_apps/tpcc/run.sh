@@ -68,6 +68,7 @@ function client() {
         --servers=$VM_IP \
         --duration=$duration \
         --warehouses=$warehouses \
+        --displayinterval=$displayinterval \
         --scalefactor=22
 }
 
@@ -78,9 +79,10 @@ function help() {
 # Run the targets pass on the command line
 # If no first arg, run server
 if [ $# -eq 0 ]; then server; exit; fi
-source $4
+source $5
 duration=$2
 warehouses=$3
+displayinterval=$4
 # for arg in "$@"
 # do
     echo "${0}: Performing $1..."
